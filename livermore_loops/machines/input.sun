@@ -1,0 +1,4 @@
+Sun Sparc10 @ 50 MHz
+SUNOS 4.1.3
+acc __OPTIMIZE_FLAGS_HERE__
+__OUTPUT_PREFIX__sparc10-50

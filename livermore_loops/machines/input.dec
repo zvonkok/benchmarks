@@ -1,0 +1,4 @@
+DEC 8400 440 MHz ev5.6
+Digital Unix 4.0d
+cc __OPTIMIZE_FLAGS_HERE__
+__OUTPUT_PREFIX__dec-8400-440

@@ -1,0 +1,15 @@
+To run configure, specify the machine type and the type of 
+floating point numbers to use.
+
+Examples:
+./configure -cpu=dec float
+./configure -cpu=sun double
+
+Possible machine types (Unix versions) include: 
+dec, ibm, hp, linux, sgi, solaris, sun
+(sun is SUNOS, the predecessor to Solaris)
+
+Possible number types are: 
+float and double
+
+double is the default.

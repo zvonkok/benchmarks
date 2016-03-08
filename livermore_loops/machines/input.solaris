@@ -1,0 +1,4 @@
+Sun Sparc10 @ 40 MHz
+Solaris 2.4
+cc __OPTIMIZE_FLAGS_HERE__
+__OUTPUT_PREFIX__sparc10-40

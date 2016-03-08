@@ -1,0 +1,4 @@
+Dell XPS H266, 266 MHz Pentium II
+Linux 2.0.30
+gcc -O2 -malign-double -ffast-math -funroll-loops
+clld.dell-p2-266

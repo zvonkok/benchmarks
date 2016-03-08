@@ -1,0 +1,118 @@
+#!/bin/sh
+
+# configure -- not created by autoconf. (steve langer, 980706)
+# package configuration for C version of Livermore Fortran Kernels
+
+while [ "$#" -ge 1 ]; do
+
+    case "$1" in
+         help )                 cat usage;exit ;;
+         float | -float )       FLOAT="float" ;;
+         double | -double )     FLOAT="double" ;;
+         -cpu=* )               CPU=`echo "$1" | sed 's/-cpu=//'` ;;
+    esac
+    shift
+done
+
+if [ "$FLOAT" = "" ]; then
+   FLOAT="double"
+fi
+
+if [ "$CPU" = "" ]; then
+   echo "configure: need to specify CPU"
+   exit
+fi
+
+case "$FLOAT" in
+     double ) PREFIX="clld." ;;
+     float ) PREFIX="cllf." ;;
+esac
+
+case "$CPU" in
+     dec ) CPU="DEC" ;;
+     DEC ) CPU="DEC" ;;
+     sgi ) CPU="SGI" ;;
+     SGI ) CPU="SGI" ;;
+     sun ) CPU="SUN" ;;
+     SUN ) CPU="SUN" ;;
+     solaris ) CPU="SOLARIS" ;;
+     SOLARIS ) CPU="SOLARIS" ;;
+     hpux ) CPU="HPUX" ;;
+     HPUX ) CPU="HPUX" ;;
+     hp ) CPU="HPUX" ;;
+     HP ) CPU="HPUX" ;;
+     ibm ) CPU="IBM" ;;
+     IBM ) CPU="IBM" ;;
+     aix ) CPU="IBM" ;;
+     AIX ) CPU="IBM" ;;
+     linux ) CPU="LINUX" ;;
+     LINUX ) CPU="LINUX" ;;
+     * ) echo "Unknown architecture $CPU" ; CPU="" ;;
+esac
+
+case "$CPU" in
+     DEC ) ANSIC="cc" ;;
+     SGI ) ANSIC="cc" ;;
+     SUN ) ANSIC="acc" ;;
+     SOLARIS ) ANSIC="cc" ;;
+     HPUX ) ANSIC="cc" ;;
+     IBM ) ANSIC="cc" ;;
+     LINUX ) ANSIC="gcc" ;;
+     * ) echo "Unknown architecture $CPU" ; ANSIC="" ;;
+esac
+
+case "$CPU" in
+     DEC ) FAST_FLAGS="-fast -O5 -tune host -arch host -ansi_alias" ;;
+     SGI ) FAST_FLAGS="-mips4 -O3 -n32 -Ofast" ;;
+     SUN ) FAST_FLAGS="-fast" ;;
+     SOLARIS ) FAST_FLAGS="-fast -Xa -fsimple=2 -xO5" ;;
+     HPUX ) FAST_FLAGS="+O2 +FPD +Oaggressive" ;;
+     IBM ) FAST_FLAGS="-O3 -qstrict -qtune=604 -qarch=ppc -qnomaf" ;;
+     LINUX ) FAST_FLAGS="-O2 -malign-double -ffast-math -funroll-loops" ;;
+     * ) echo "Unknown architecture $CPU" ; FAST_FLAGS="" ;;
+esac
+
+case "$CPU" in
+     DEC ) NORM_FLAGS="" ;;
+     SGI ) NORM_FLAGS="-n32" ;;
+     SUN ) NORM_FLAGS="" ;;
+     SOLARIS ) NORM_FLAGS="" ;;
+     HPUX ) NORM_FLAGS="-Aa -D_HPUX_SOURCE" ;;
+     IBM ) NORM_FLAGS="" ;;
+     LINUX ) NORM_FLAGS="" ;;
+     * ) echo "Unknown architecture $CPU" ; NORM_FLAGS="" ;;
+esac
+
+case "$CPU" in
+     DEC ) INFILE="machines/input.dec" ;;
+     SGI ) INFILE="machines/input.sgi" ;;
+     SUN ) INFILE="machines/input.sun" ;;
+     SOLARIS ) INFILE="machines/input.solaris" ;;
+     HPUX ) INFILE="machines/input.hpux" ;;
+     IBM ) INFILE="machines/input.ibm" ;;
+     LINUX ) INFILE="machines/input.linux" ;;
+     * ) echo "Unknown architecture $CPU" ; INFILE="" ;;
+esac
+
+case "$CPU" in
+     DEC ) TIMER="BSD_TIMER" ;;
+     SGI ) TIMER="BSD_TIMER" ;;
+     SUN ) TIMER="BSD_TIMER" ;;
+     SOLARIS ) TIMER="SYSV_TIMER" ;;
+     HPUX ) TIMER="SYSV_TIMER" ;;
+     IBM ) TIMER="SYSV_TIMER" ;;
+     LINUX ) TIMER="SYSV_TIMER" ;;
+     * ) echo "Unknown architecture $CPU" ; TIMER="" ;;
+esac
+
+sed "s/__OPTIMIZE_FLAGS_HERE__/${FAST_FLAGS}/" < ${INFILE} | \
+          sed "s/__OUTPUT_PREFIX__/${PREFIX}/" > input
+
+sed "s/__OPTIMIZE_FLAGS_HERE__/${FAST_FLAGS}/" < Makefile.in | \
+sed "s/__NORM_FLAGS_HERE__/${NORM_FLAGS}/" | \
+sed "s/__COMPILER_HERE__/${ANSIC}/" | \
+sed "s/__TIMER_GOES_HERE__/${TIMER}/" | \
+sed "s/__FLOAT_TYPE__/${FLOAT}/"  > Makefile
+
+exit
+
